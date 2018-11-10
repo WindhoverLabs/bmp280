@@ -62,8 +62,8 @@ extern "C" {
 /** \brief Definition for a single config table entry */
 typedef struct
 {
-    /** \brief table value placeholder.  */
-    int temp;
+    /** \brief Current pressure at MSL in kPa  */
+    double p1;
 } BMP280_ConfigTbl_t;
 
 

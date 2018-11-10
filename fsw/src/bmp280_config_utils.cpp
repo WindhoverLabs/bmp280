@@ -104,9 +104,29 @@ BMP280_InitConfigTbl_Exit_Tag:
 int32 BMP280::ValidateConfigTbl(void* ConfigTblPtr)
 {
     int32  iStatus = 0;
+    boolean valid_bool = TRUE;
     BMP280_ConfigTbl_t* BMP280_ConfigTblPtr = (BMP280_ConfigTbl_t*)(ConfigTblPtr);
 
-    /* TODO:  Add validation code here. */
+    /* The lowest non-tornadic atmospheric pressure ever measured was 87 kPa, 
+     * set on 12 October 1979, during Typhoon Tip in the western Pacific Ocean.
+     */
+     
+     /* The highest sea-level pressure on Earth occurs in Siberia, 
+      * where the Siberian High often attains a sea-level pressure above 
+      * 105 kPa with record highs close to 108.5 kPa.
+      */
+     
+    if(!(MS5607_ConfigTblPtr->p1 > 87.0f && MS5607_ConfigTblPtr->p1 < 108.5f))
+    {
+        valid_bool = FALSE;
+    }
+
+    if(FALSE == valid_bool)
+    {
+        (void) CFE_EVS_SendEvent(MS5607_CFGTBL_VALIDATION_ERR_EID, CFE_EVS_ERROR,
+            "Config params table validation error");
+        iStatus = -1;
+    }
 
 BMP280_ValidateConfigTbl_Exit_Tag:
     return (iStatus);
